@@ -17,7 +17,7 @@ public class UserRequest {
     private Date birthday;
     private Integer gender;
     private String address_description;
-    private List<String> photo;
+    private String photo;
     private String commune;
     private Integer department;
     private Integer employeeType;

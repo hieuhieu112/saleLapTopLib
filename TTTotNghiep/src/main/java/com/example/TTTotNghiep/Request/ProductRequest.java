@@ -11,7 +11,8 @@ import java.util.List;
 @Data
 public class ProductRequest {
     private String name;
-    private List<String> photo;
+    private List<String> photos;
+    private String photo;
     private Integer quantity;
     private LocalDate date;
     private String description;

@@ -17,7 +17,8 @@ public class ProductDTO implements Serializable {
     private String name;
     @Column(length = 1000)
     //@ElementCollection
-    private List<String> photo;
+    private List<String> photos;
+    private String photo;
     private Integer quantity;
     private LocalDate date;
 

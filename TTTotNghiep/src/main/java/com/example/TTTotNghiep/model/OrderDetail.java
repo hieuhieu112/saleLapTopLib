@@ -1,6 +1,7 @@
 package com.example.TTTotNghiep.model;
 
 
+import com.example.TTTotNghiep.Response.OrderDetailResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +30,22 @@ public class OrderDetail {
     @ManyToOne
     @JoinColumn(name = "ProductID")
     private Product product;
+
+
+    public OrderDetailResponse convertToResponse(){
+        OrderDetailResponse response = new OrderDetailResponse();
+        response.setId(id);
+        if(discount != null){
+            response.setDiscount(discount.getDiscount().getDiscount());
+        }else{
+            response.setDiscount(0.0f);
+        }
+
+        response.setProduct(product.getName());
+        response.setUnitprice(unitprice);
+        response.setQuantity(quantity);
+        response.setPhoto(product.getPhoto());
+
+        return response;
+    }
 }

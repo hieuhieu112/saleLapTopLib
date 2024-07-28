@@ -18,7 +18,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String name;
-    private String nameen;
+    private String description;
     private String photo;
 
 

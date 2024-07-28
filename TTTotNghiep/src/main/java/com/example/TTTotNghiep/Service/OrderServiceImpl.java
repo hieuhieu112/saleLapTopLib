@@ -106,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Orders createCart(String jwt) throws Exception {
-        User savedUser = userServices.findUserByJwtToken(jwt);
+        User savedUser = userServices.findUserByJwtTokenSignUp(jwt);
         Orders cart = new Orders();
 
         cart.setStatus(0);
@@ -121,6 +121,12 @@ public class OrderServiceImpl implements OrderService {
         cart.setCommune(savedUser.getCommune());
 
         return orderRepository.save(cart);
+    }
+
+    @Override
+    public List<OrderDetail> getCartItems(String jwt) throws Exception {
+        Orders order = getCart(jwt);
+        return orderDetailService.getAllByIDOrder(order.getId());
     }
 
 

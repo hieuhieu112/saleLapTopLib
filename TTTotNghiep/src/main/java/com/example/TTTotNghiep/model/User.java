@@ -33,10 +33,7 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String pass;
 
-
-    @Column(length = 1000)
-    @ElementCollection
-    private List<String> photo;
+    private String photo;
 
 
 //    private String CommuneID;

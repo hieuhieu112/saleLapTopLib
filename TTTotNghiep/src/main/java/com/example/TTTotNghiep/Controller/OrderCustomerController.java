@@ -2,6 +2,7 @@ package com.example.TTTotNghiep.Controller;
 
 
 import com.example.TTTotNghiep.Response.MessageResponse;
+import com.example.TTTotNghiep.Response.OrderDetailResponse;
 import com.example.TTTotNghiep.Service.OrderDetailService;
 import com.example.TTTotNghiep.Service.OrderServiceImpl;
 import com.example.TTTotNghiep.Service.ProductServiceImp;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -46,8 +48,18 @@ public class OrderCustomerController {
     }
 
     @GetMapping("/order/cart")
-    public ResponseEntity<List<Orders>> getCartByUser(@RequestHeader("Authorization") String jwt) throws Exception{
-        return new ResponseEntity<>(orderService.getListByUser(jwt), HttpStatus.OK);
+    public ResponseEntity<Orders> getCartByUser(@RequestHeader("Authorization") String jwt) throws Exception{
+        return new ResponseEntity<>(orderService.getCart(jwt), HttpStatus.OK);
+    }
+
+    @GetMapping("/order/cart/detail")
+    public ResponseEntity<List<OrderDetailResponse>> getListItemInCart(@RequestHeader("Authorization") String jwt) throws Exception{
+        List<OrderDetail> details = orderService.getCartItems(jwt);
+        List<OrderDetailResponse> responses = new ArrayList<>();
+        for(OrderDetail detail: details){
+            responses.add(detail.convertToResponse());
+        }
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping("/order/detail/{id}")

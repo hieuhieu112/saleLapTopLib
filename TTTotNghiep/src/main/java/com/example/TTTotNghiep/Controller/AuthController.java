@@ -95,18 +95,17 @@ public class AuthController {
         String userName = request.getEmail();
         String password = request.getPassword();
         Authentication authentication = authenticate(userName, password);
+        System.out.println(userName + password);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String role = authorities.isEmpty()?null:authorities.iterator().next().getAuthority();
-
+        System.out.println("role: " + role);
 
         String jwt = jwtProvider.generateToken(authentication);
 
         AuthResponse authResponse = new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setRole(USER_ROLE.valueOf(role));
-
-
         authResponse.setMessage("Sign in success");
 
 

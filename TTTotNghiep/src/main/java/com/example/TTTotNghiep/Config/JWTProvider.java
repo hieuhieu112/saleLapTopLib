@@ -32,12 +32,23 @@ public class JWTProvider {
 
         return jwt;
     }
+
+    public String getEmailFromJWTSignUp(String jwt){
+//        jwt = jwt.substring(7);
+        
+//        System.out.println(Jwts.parserBuilder().setSigningKey(key).build());
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+        String email = String.valueOf(claims.get("email"));
+        return  email;
+
+    }
+
     public String getEmailFromJWT(String jwt){
         jwt = jwt.substring(7);
+        System.out.println(jwt);
+//        System.out.println(Jwts.parserBuilder().setSigningKey(key).build());
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-
         String email = String.valueOf(claims.get("email"));
-
         return  email;
 
     }

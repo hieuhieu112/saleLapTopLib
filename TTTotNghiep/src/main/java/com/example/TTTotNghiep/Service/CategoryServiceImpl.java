@@ -18,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category createCategory(String name, String photo) throws  Exception {
         Category category = new Category();
         category.setName(name);
-        category.setNameen(name);
+        category.setDescription(name);
         category.setPhoto(photo);
         categoryRepository.save(category);
         return category;
@@ -28,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category editCategory(String name, Integer id, String photo)  throws  Exception{
         Category category = getDetail(id);
         category.setName(name);
-        category.setNameen(name);
+        category.setDescription(name);
         category.setPhoto(photo);
         categoryRepository.save(category);
         return category;

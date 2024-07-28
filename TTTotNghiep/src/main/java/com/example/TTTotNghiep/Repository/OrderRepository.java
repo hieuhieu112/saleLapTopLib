@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Orders, Integer> {
-    @Query("SELECT o FROM Orders o WHERE o.orderer.email = :email")
+    @Query("SELECT o FROM Orders o WHERE o.orderer.email = :email AND o.type = 1")
     List<Orders> findByUserID(@Param("email") String email);
 
     @Query("SELECT o FROM Orders o WHERE o.orderer.email = :email AND o.type = 0")

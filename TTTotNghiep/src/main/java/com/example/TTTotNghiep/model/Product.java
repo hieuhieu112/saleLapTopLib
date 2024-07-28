@@ -25,7 +25,9 @@ public class Product {
     private String name;
     @Column(length = 1000)
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> photo;
+    private List<String> photos;
+
+    private String photo;
 
     private Integer quantity;
     private LocalDate date;

@@ -2,6 +2,7 @@ package com.example.TTTotNghiep.Service;
 
 
 
+import com.example.TTTotNghiep.model.OrderDetail;
 import com.example.TTTotNghiep.model.Orders;
 
 import java.time.LocalDateTime;
@@ -16,4 +17,5 @@ public interface OrderService {
     public void cartToOrder(String jwt) throws Exception;
     public void changeStatus(String jwt, Integer id, Integer status) throws Exception;
     public Orders createCart(String jwt) throws Exception;
+    public List<OrderDetail> getCartItems(String jwt)  throws Exception;
 }

@@ -1,14 +1,9 @@
 package com.example.TTTotNghiep.Controller;
 
 import com.example.TTTotNghiep.Response.MessageResponse;
-import com.example.TTTotNghiep.Service.CategoryServiceImpl;
-import com.example.TTTotNghiep.Service.PriceServicesImpl;
-import com.example.TTTotNghiep.Service.ProductServiceImp;
-import com.example.TTTotNghiep.Service.UserServicesImp;
+import com.example.TTTotNghiep.Service.*;
 import com.example.TTTotNghiep.dto.ProductDTO;
-import com.example.TTTotNghiep.model.Category;
-import com.example.TTTotNghiep.model.Product;
-import com.example.TTTotNghiep.model.User;
+import com.example.TTTotNghiep.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +27,8 @@ public class CustomerController {
 
     @Autowired
     private PriceServicesImpl priceServices;
+    @Autowired
+    private CommuneServices communeServices;
 
     @GetMapping("category/all")
     public ResponseEntity<List<Category>> getAll() throws Exception {
@@ -93,6 +90,26 @@ public class CustomerController {
         }
 
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("province/all")
+    public ResponseEntity<List<Province>> getAllProince() throws Exception{
+        List<Province>  provinces = communeServices.getAllProvince();
+        return new ResponseEntity<>(provinces, HttpStatus.OK);
+    }
+
+    @GetMapping("province/{id}")
+    public ResponseEntity<List<District>> getAllDistrictByProvince(@PathVariable String id) throws  Exception{
+        List<District> districts = communeServices.getDistrictByProvince(id);
+
+        return new ResponseEntity<>(districts, HttpStatus.OK);
+    }
+
+    @GetMapping("district/{id}")
+    public ResponseEntity<List<Commune>> getAllCommuneByProvince(@PathVariable String id) throws Exception{
+        List<Commune> communes = communeServices.getCommuneByProvince(id);
+
+        return new ResponseEntity<>(communes, HttpStatus.OK);
     }
 
 }
