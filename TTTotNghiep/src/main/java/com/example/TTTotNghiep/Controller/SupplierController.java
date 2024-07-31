@@ -3,6 +3,7 @@ package com.example.TTTotNghiep.Controller;
 
 import com.example.TTTotNghiep.Request.SupplierRequest;
 import com.example.TTTotNghiep.Response.MessageResponse;
+import com.example.TTTotNghiep.Response.SupplierResponse;
 import com.example.TTTotNghiep.Service.SuppierServiceImpl;
 import com.example.TTTotNghiep.model.Supplier;
 import org.aspectj.bridge.Message;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,25 +23,30 @@ public class SupplierController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<Supplier>> getAll(@RequestHeader("Authorization") String jwt) throws Exception {
-        return new ResponseEntity<>(suppierService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<SupplierResponse>> getAll(@RequestHeader("Authorization") String jwt) throws Exception {
+        List<Supplier> suppliers = suppierService.findAll();
+        List<SupplierResponse> responses = new ArrayList<>();
+        for (Supplier supplier:suppliers){
+            responses.add((supplier.convertToResponse()));
+        }
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Supplier> getDetail(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
-        return new ResponseEntity<>(suppierService.findByID(id), HttpStatus.OK);
+    public ResponseEntity<SupplierResponse> getDetail(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
+        Supplier supplier = suppierService.findByID(id);
+        return new ResponseEntity<>(supplier.convertToResponse(), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<Supplier> getDetail(@RequestHeader("Authorization") String jwt, @RequestBody SupplierRequest request) throws Exception{
-        System.out.println(request.getAddressdescription());
-        return new ResponseEntity<>(suppierService.createSupplier(request), HttpStatus.CREATED);
+    public ResponseEntity<SupplierResponse> getDetail(@RequestHeader("Authorization") String jwt, @RequestBody SupplierRequest request) throws Exception{
+        return new ResponseEntity<>(suppierService.createSupplier(request).convertToResponse(), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Supplier> editSupplier(@RequestHeader("Authorization") String jwt,
+    public ResponseEntity<SupplierResponse> editSupplier(@RequestHeader("Authorization") String jwt,
                                                  @PathVariable Integer id, @RequestBody SupplierRequest request) throws Exception{
-        return new ResponseEntity<>(suppierService.editSupplier(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(suppierService.editSupplier(id, request).convertToResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

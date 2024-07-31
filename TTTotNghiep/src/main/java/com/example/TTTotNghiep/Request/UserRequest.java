@@ -23,7 +23,7 @@ public class UserRequest {
     private Integer employeeType;
     private  List<ProductDTO> favorites;
 
-    public User convertToUser(Commune commune){
+    public User convertToUser(Commune commune) throws Exception {
        User user = new User();
        user.setEmail(email);
        user.setPass(pass);

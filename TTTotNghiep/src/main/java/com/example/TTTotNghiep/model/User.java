@@ -1,12 +1,15 @@
 package com.example.TTTotNghiep.model;
 
 
+import com.example.TTTotNghiep.Config.DesEncryptionUtils;
+import com.example.TTTotNghiep.Response.UserResponse;
 import com.example.TTTotNghiep.dto.ProductDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,4 +86,47 @@ public class User {
 
     @ElementCollection //Auto create a table contain data below
     private List<Integer> favorites = new ArrayList<>();
+
+    public void setPass(String pass) throws Exception {
+        try {
+            // Tạo khóa DES
+            SecretKey key = DesEncryptionUtils.generateKey();
+
+            // Mã hóa mật khẩu
+            String encryptedPassword = DesEncryptionUtils.encrypt(pass, key);
+            this.pass = encryptedPassword;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public UserResponse converToResponse(){
+        UserResponse response = new UserResponse();
+        response.setId(id);
+        response.setEmail(email);
+        response.setFullname(fullname);
+        response.setBirthday(getBirthday());
+        if(gender == 1){
+            response.setGender("Male");
+        }else{
+            response.setGender("Female");
+        }
+
+        response.setStatus(getStatus());
+        response.setPhoto(photo);
+        response.setNumberphone(numberphone);
+        response.setCUSTOMERRole(getCUSTOMERRole().toString());
+        if(department != null){
+            response.setDepartment(department.getNameDepartment());
+        }
+        if(contracts != null) response.setContracts(contracts);
+
+        if(employeeType != null )response.setEmployeeType(employeeType.getNameEmployeeType());
+        String add = getAddressDescription() +", "+commune.getName()+", "+commune.getMaqh().getName()+", "+commune.getMaqh().getMatp().getName();
+        response.setAddress(add);
+
+        return response;
+    }
 }

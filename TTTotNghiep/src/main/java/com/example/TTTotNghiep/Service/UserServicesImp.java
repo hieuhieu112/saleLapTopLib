@@ -6,6 +6,8 @@ import com.example.TTTotNghiep.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServicesImp implements UserServices {
     @Autowired
@@ -40,5 +42,10 @@ public class UserServicesImp implements UserServices {
             throw  new Exception("User not found");
         }
         return user;
+    }
+
+    @Override
+    public List<User> findAllCustomer() throws Exception {
+        return userRepository.findAllUserByType(0);
     }
 }

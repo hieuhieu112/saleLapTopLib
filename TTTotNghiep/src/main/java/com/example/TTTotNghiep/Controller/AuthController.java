@@ -58,6 +58,7 @@ public class AuthController {
         User createUser = new User();
         createUser.setEmail(user.getEmail());
         createUser.setPass(passwordEncoder.encode(user.getPass()));
+//        createUser.setPass(user.getPass());
         createUser.setBirthday(user.getBirthday());
         createUser.setCommune(user.getCommune());
         createUser.setFullname(user.getFullname());
@@ -95,7 +96,6 @@ public class AuthController {
         String userName = request.getEmail();
         String password = request.getPassword();
         Authentication authentication = authenticate(userName, password);
-        System.out.println(userName + password);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String role = authorities.isEmpty()?null:authorities.iterator().next().getAuthority();

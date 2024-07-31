@@ -3,6 +3,7 @@ package com.example.TTTotNghiep.Controller;
 
 import com.example.TTTotNghiep.Response.MessageResponse;
 import com.example.TTTotNghiep.Response.OrderDetailResponse;
+import com.example.TTTotNghiep.Response.OrderResponse;
 import com.example.TTTotNghiep.Service.OrderDetailService;
 import com.example.TTTotNghiep.Service.OrderServiceImpl;
 import com.example.TTTotNghiep.Service.ProductServiceImp;
@@ -33,13 +34,30 @@ public class OrderCustomerController {
     private ProductServiceImp productServiceImp;
 
     @GetMapping("/order/all")
-    public ResponseEntity<List<Orders>> getListOrderByUser(@RequestHeader("Authorization") String jwt) throws Exception{
-        return new ResponseEntity<>(orderService.getListByUser(jwt), HttpStatus.OK);
+    public ResponseEntity<List<OrderResponse>> getListOrderByUser(@RequestHeader("Authorization") String jwt) throws Exception{
+        List<Orders> orders = orderService.getListByUser(jwt);
+        List<OrderResponse> responses = new ArrayList<>();
+
+        for(Orders order: orders){
+            responses.add(order.convertToResponse());
+        }
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping("/order/{id}")
-    public ResponseEntity<Orders> getDetailOrder(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
-        return new ResponseEntity<>(orderService.findByID(id), HttpStatus.OK);
+    public ResponseEntity<OrderResponse> getDetailOrder(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
+        Orders order = orderService.findByID(id);
+        OrderResponse response = order.convertToResponse();
+
+        List<OrderDetail> detailList = orderDetailService.getAllByIDOrder(id);
+        List<OrderDetailResponse> responses = new ArrayList<>();
+        for(OrderDetail detail: detailList){
+            responses.add(detail.convertToResponse());
+        }
+        response.setListDetail(responses);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/order/all/{status}")
@@ -63,8 +81,13 @@ public class OrderCustomerController {
     }
 
     @GetMapping("/order/detail/{id}")
-    public ResponseEntity<List<OrderDetail>> getListOrderDetailByIDOrder(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
-        return new ResponseEntity<>(orderDetailService.getAllByIDOrder(id), HttpStatus.OK);
+    public ResponseEntity<List<OrderDetailResponse>> getListOrderDetailByIDOrder(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
+        List<OrderDetail> detailList = orderDetailService.getAllByIDOrder(id);
+        List<OrderDetailResponse> responses = new ArrayList<>();
+        for(OrderDetail detail: detailList){
+            responses.add(detail.convertToResponse());
+        }
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
 

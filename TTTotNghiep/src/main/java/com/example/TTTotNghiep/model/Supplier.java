@@ -1,5 +1,6 @@
 package com.example.TTTotNghiep.model;
 
+import com.example.TTTotNghiep.Response.SupplierResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,4 +32,18 @@ public class Supplier {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplier")
     @JsonIgnore
     private List<Product> products;
+
+    public SupplierResponse convertToResponse(){
+        SupplierResponse response = new SupplierResponse();
+        response.setId(id);
+        response.setName(name);
+        response.setLogo(logo);
+        response.setEmail(email);
+        response.setNumberPhone(numberPhone);
+
+        String add = getAddressDescription()+", "+commune.getName()+", "+commune.getMaqh().getName()+", "+commune.getMaqh().getMatp().getName();
+        response.setAdress(add);
+
+        return response;
+    }
 }
