@@ -1,6 +1,7 @@
 package com.example.TTTotNghiep.model;
 
 
+import com.example.TTTotNghiep.Response.ProductInSupplierResponse;
 import com.example.TTTotNghiep.dto.ProductDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -66,6 +67,22 @@ public class Product {
 
     public ProductDTO convertToDTO(){
         ProductDTO dto = new ProductDTO();
+        dto.setId(id);
+        dto.setName(getName());
+        dto.setPhoto(photo);
+        dto.setDate(date);
+        dto.setDescription(description);
+        dto.setQuantity(quantity);
+        dto.setViews(getViews());
+        dto.setStatus(status);
+        dto.setCategoryID(category.getId());
+        dto.setSupplierID(supplier.getId());
+
+        return dto;
+    }
+
+    public ProductInSupplierResponse convertToResponseSupplier(){
+        ProductInSupplierResponse dto = new ProductInSupplierResponse();
         dto.setId(id);
         dto.setName(getName());
         dto.setPhoto(photo);
