@@ -34,7 +34,7 @@ public class OrderDetail {
 
     public OrderDetailResponse convertToResponse(){
         OrderDetailResponse response = new OrderDetailResponse();
-        response.setId(id);
+        response.setId(product.getId());
         if(discount != null){
             response.setDiscount(discount.getDiscount().getDiscount());
         }else{

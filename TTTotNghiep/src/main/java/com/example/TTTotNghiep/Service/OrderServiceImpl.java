@@ -3,6 +3,7 @@ package com.example.TTTotNghiep.Service;
 import com.example.TTTotNghiep.Config.JWTProvider;
 import com.example.TTTotNghiep.Repository.OrderRepository;
 import com.example.TTTotNghiep.Repository.UserRepository;
+import com.example.TTTotNghiep.Request.OrderRequest;
 import com.example.TTTotNghiep.model.OrderDetail;
 import com.example.TTTotNghiep.model.Orders;
 import com.example.TTTotNghiep.model.User;
@@ -33,10 +34,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private JWTProvider jwtProvider;
+    @Autowired
+    private CommuneServices communeServices;
 
     @Override
     public List<Orders> findAll() throws Exception{
         return orderRepository.findAll();
+    }
+
+    @Override
+    public List<Orders> findAllOrder() throws Exception {
+        return orderRepository.findAllOrder();
     }
 
     public Orders findByID(Integer id) throws Exception{
@@ -74,9 +82,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void cartToOrder(String jwt) throws Exception {
+    public void cartToOrder(String jwt, OrderRequest request) throws Exception {
         Orders cart = getCart(jwt);
         cart.setType(1);
+        cart.setStatus(1);
+        cart.setOrderDate(LocalDateTime.now());
+        cart.setReceiver(request.getReceiver());
+        cart.setDescription(request.getDescription());
+        cart.setAddressDescription(request.getAddressDescription());
+        cart.setCommune(communeServices.getCommuneByID(request.getCommune()));
         orderRepository.save(cart);
 
         List<OrderDetail> orderDetails = orderDetailService.getAllByIDOrder(cart.getId());
@@ -106,6 +120,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Orders createCart(String jwt) throws Exception {
+        User savedUser = userServices.findUserByJwtToken(jwt);
+        Orders cart = new Orders();
+
+        cart.setStatus(0);
+        cart.setOrderDate(null);
+        cart.setReceiver(savedUser.getFullname());
+        cart.setAddressDescription(savedUser.getAddressDescription());
+        cart.setDescription("");
+        cart.setNumberPhone(savedUser.getNumberphone());
+        cart.setOrderer(savedUser);
+        cart.setConfirmer(null);
+        cart.setType(0);
+        cart.setCommune(savedUser.getCommune());
+
+        return orderRepository.save(cart);
+    }
+
+    public Orders createCartSignUp(String jwt) throws Exception {
         User savedUser = userServices.findUserByJwtTokenSignUp(jwt);
         Orders cart = new Orders();
 
@@ -127,6 +159,14 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDetail> getCartItems(String jwt) throws Exception {
         Orders order = getCart(jwt);
         return orderDetailService.getAllByIDOrder(order.getId());
+    }
+
+    @Override
+    public Orders approvalOrder(Integer id, Integer status) throws Exception {
+        Orders orders = findByID(id);
+        if(status <= 3 && status >= 0) orders.setStatus(status);
+        orderRepository.save(orders);
+        return orders;
     }
 
 

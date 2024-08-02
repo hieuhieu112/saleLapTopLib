@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,7 @@ public class Orders {
     private String addressDescription;
     private String description;
     private Integer status; //0: Cancel, 1: Waiting for approve, 2: In process, 3: Done
+    @JoinColumn(name = "number_phone")
     private String numberPhone;
     private Integer type;//1: order, 0: cart
 
@@ -50,14 +52,18 @@ public class Orders {
         OrderResponse response = new OrderResponse();
 
         response.setId(id);
-        response.setOrderDate(orderDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formattedDate = orderDate.format(formatter);
+
+        response.setOrderDate(formattedDate);
         response.setReceiver(receiver);
         response.setDescription(description);
+        response.setStatusInt(getStatus());
         switch (status){
-            case 0: response.setStatus("Cancel");
-            case 1: response.setStatus("Waiting for approve");
-            case 2: response.setStatus("In process");
-            case 3: response.setStatus("Done");
+            case 0: response.setStatus("Cancel"); break;
+            case 1: response.setStatus("Waiting for approve");break;
+            case 2: response.setStatus("In process");break;
+            case 3: response.setStatus("Done");break;
         }
         //0: Cancel, 1: Waiting for approve, 2: In process, 3: Done
         response.setNumberPhone(numberPhone);

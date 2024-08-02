@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public class OrderResponse {
     private Integer id;
-    private LocalDateTime orderDate;
+    private String orderDate;
     private String receiver;
     private String address;
     private String description;
@@ -24,6 +24,7 @@ public class OrderResponse {
     private String numberPhone;
     private String orderer;
     private String confirmer;
+    private Integer statusInt;
 
     private List<OrderDetailResponse> listDetail;
 }

@@ -1,6 +1,8 @@
 package com.example.TTTotNghiep.Controller;
 
 
+import com.example.TTTotNghiep.Request.LoginRequest;
+import com.example.TTTotNghiep.Request.OrderRequest;
 import com.example.TTTotNghiep.Response.MessageResponse;
 import com.example.TTTotNghiep.Response.OrderDetailResponse;
 import com.example.TTTotNghiep.Response.OrderResponse;
@@ -45,7 +47,7 @@ public class OrderCustomerController {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/order/{id}")
+    @GetMapping("/orders/{id}")
     public ResponseEntity<OrderResponse> getDetailOrder(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
         Orders order = orderService.findByID(id);
         OrderResponse response = order.convertToResponse();
@@ -105,9 +107,9 @@ public class OrderCustomerController {
         return new ResponseEntity<>(new MessageResponse("Add to cart success"), HttpStatus.OK);
     }
 
-    @GetMapping("/order/buy")
-    public ResponseEntity<MessageResponse> buyProduct(@RequestHeader("Authorization") String jwt) throws Exception{
-        orderService.cartToOrder(jwt);
+    @PostMapping("/order/buy")
+    public ResponseEntity<MessageResponse> buyProduct(@RequestBody OrderRequest request, @RequestHeader("Authorization") String jwt) throws Exception{
+        orderService.cartToOrder(jwt, request);
         return new ResponseEntity<>(new MessageResponse("Buy success"), HttpStatus.OK);
     }
 
@@ -115,7 +117,7 @@ public class OrderCustomerController {
     public ResponseEntity<MessageResponse> changeStatus(@RequestHeader("Authorization") String jwt,
                                                         @PathVariable Integer id, @RequestParam Integer status) throws Exception{
         orderService.changeStatus(jwt, id, status);
-        return new ResponseEntity<>(new MessageResponse("Buy success"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Cancel success"), HttpStatus.OK);
     }
 
 }

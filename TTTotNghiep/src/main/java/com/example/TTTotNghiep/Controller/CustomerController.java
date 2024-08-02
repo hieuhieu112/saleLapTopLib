@@ -30,6 +30,11 @@ public class CustomerController {
     @Autowired
     private CommuneServices communeServices;
 
+    @GetMapping("findCommune/{id}")
+    public ResponseEntity<Commune> getCommuneByID(@PathVariable String id) throws Exception{
+        return new ResponseEntity<>(communeServices.getCommuneByID(id), HttpStatus.OK);
+    }
+
     @GetMapping("category/all")
     public ResponseEntity<List<Category>> getAll() throws Exception {
         return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
@@ -72,9 +77,10 @@ public class CustomerController {
     @GetMapping("product/{id}")
     public ResponseEntity<ProductDTO> getDetailProduct(@PathVariable Integer id) throws Exception {
 
-        ProductDTO products = productServiceImp.findByID(id).convertToDTO();
+        ProductDTO dto = productServiceImp.findByID(id).convertToDTO();
+        dto.setPrice(priceServices.getPriceByProductTime(id, LocalDateTime.now()).get(0).getPrice_sale());
 
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("product/category/{id}")

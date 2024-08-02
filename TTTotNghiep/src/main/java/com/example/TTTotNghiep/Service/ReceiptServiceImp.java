@@ -1,13 +1,11 @@
 package com.example.TTTotNghiep.Service;
 
+import com.example.TTTotNghiep.Repository.ProductRepository;
 import com.example.TTTotNghiep.Repository.ReceiptDetailRepository;
 import com.example.TTTotNghiep.Repository.ReceiptRepository;
 import com.example.TTTotNghiep.Request.ReceiptDetailRequest;
 import com.example.TTTotNghiep.Request.ReceiptRequest;
-import com.example.TTTotNghiep.model.Receipt;
-import com.example.TTTotNghiep.model.ReceiptDetail;
-import com.example.TTTotNghiep.model.Supplier;
-import com.example.TTTotNghiep.model.User;
+import com.example.TTTotNghiep.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +28,10 @@ public class ReceiptServiceImp implements ReceiptService{
     private ProductServiceImp productService;
     @Autowired
     private SuppierServiceImpl suppierService;
+    @Autowired
+    private PriceServicesImpl priceServices;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public List<Receipt> getAll() throws Exception {
@@ -59,13 +61,24 @@ public class ReceiptServiceImp implements ReceiptService{
     public Receipt createReceipt(ReceiptRequest request, String jwt) throws Exception {
 
         Receipt receipt = request.convertToModel(userServicesImp.findUserByJwtToken(jwt), suppierService.findByID(request.getSupplierid()));
-        //List<ReceiptDetail> listDetail = new ArrayList<>();
+
+        List<ReceiptDetail> receiptDetails = new ArrayList<>();
+        for(ReceiptDetailRequest detailRequest: request.getDetailList()){
+            List<Price> prices = priceServices.getPriceByProductTime(detailRequest.getProductid(), LocalDateTime.now());
+            Product product = productService.findByID(detailRequest.getProductid());
+            receiptDetails.add(detailRequest.convertToModel(product, receipt, prices.get(0).getPrice_purchase()));
+            product.setQuantity(product.getQuantity() + detailRequest.getQuantity());
+            productRepository.save(product);
+
+        }
+        receipt.setReceiptDetail(receiptDetails);
 
         Receipt result = receiptRepository.save(receipt);
 
-        for(ReceiptDetailRequest detail : request.getDetailList()){
-            receiptDetailRepository.save(detail.convertToModel(productService.findByID(detail.getProductid()), result));
-        }
+//        for(ReceiptDetailRequest detail : request.getDetailList()){
+//            receiptDetailRepository.save(detail.convertToModel(productService.findByID(detail.getProductid()), result));
+//        }
+        result = findByID(result.getId());
 
         return result;
     }
@@ -86,8 +99,6 @@ public class ReceiptServiceImp implements ReceiptService{
     public Receipt editReceipt(Integer id, ReceiptRequest request, String jwt) throws Exception {
 
         Receipt receipt = findByID(id);
-
-        if(request.getDateImport() != null) receipt.setDateImport(request.getDateImport());
 
         if(!request.getDescription().isBlank() || !request.getDescription().isEmpty()) receipt.setDescription(request.getDescription());
 

@@ -11,14 +11,14 @@ import lombok.Data;
 @Data
 public class ReceiptDetailRequest {
     private Integer quantity;
-    private Integer unitprice;
+//    private Integer unitprice;
     private Integer productid;
 //    private Integer receiptid;
-    public ReceiptDetail convertToModel(Product product, Receipt receipt){
+    public ReceiptDetail convertToModel(Product product, Receipt receipt, Float price){
         ReceiptDetail receiptDetail = new ReceiptDetail();
         receiptDetail.setReceipt(receipt);
         receiptDetail.setProduct(product);
-        receiptDetail.setUnitprice(getUnitprice());
+        receiptDetail.setUnitprice(price);
         receiptDetail.setQuantity(getQuantity());
 
         return receiptDetail;

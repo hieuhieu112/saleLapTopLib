@@ -26,7 +26,7 @@ public class UserRequest {
     public User convertToUser(Commune commune) throws Exception {
        User user = new User();
        user.setEmail(email);
-       user.setPass(pass);
+       user.setPassword(pass);
        user.setFullname(getFullname());
        user.setNumberphone(getNumberphone());
        user.setBirthday(null);
@@ -38,6 +38,24 @@ public class UserRequest {
        user.setCUSTOMERRole(USER_ROLE.valueOf("ROLE_CUSTOMER"));
        user.setDepartment(null);
        user.setEmployeeType(null);
+        return user;
+    }
+
+    public User convertToEmployee(Commune commune) throws Exception {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(pass);
+        user.setFullname(getFullname());
+        user.setNumberphone(getNumberphone());
+        user.setBirthday(null);
+        user.setGender(getGender());
+        user.setStatus(0);
+        user.setAddressDescription(getAddress_description());
+        user.setPhoto(getPhoto());
+        user.setCommune(commune);
+        user.setCUSTOMERRole(USER_ROLE.valueOf("ROLE_EMPLOYEE"));
+        user.setDepartment(null);
+        user.setEmployeeType(null);
         return user;
     }
 }

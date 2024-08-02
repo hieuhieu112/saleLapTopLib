@@ -1,6 +1,8 @@
 package com.example.TTTotNghiep.model;
 
 
+import com.example.TTTotNghiep.Response.ReceiptDetailResponse;
+import com.example.TTTotNghiep.Response.ReceiptResponse;
 import com.example.TTTotNghiep.dto.ReceiptDTO;
 import com.example.TTTotNghiep.dto.ReceiptDetailDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,6 +10,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,5 +54,24 @@ public class Receipt {
         dto.setDetailList(receiptDetailDTOS);
 
         return dto;
+    }
+
+    public ReceiptResponse convertToResponse(){
+        ReceiptResponse response = new ReceiptResponse();
+        response.setId(id);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formattedDate = dateImport.format(formatter);
+        response.setDateImport(formattedDate);
+        response.setDescription(description);
+        response.setEmployee(employee.getFullname());
+        response.setSupplier(supplier.getName());
+
+        List<ReceiptDetailResponse> responses = new ArrayList<>();
+        for(ReceiptDetail detail: receiptDetail){
+            responses.add(detail.convertToResponse());
+        }
+        response.setReceiptDetail(responses);
+
+        return response;
     }
 }

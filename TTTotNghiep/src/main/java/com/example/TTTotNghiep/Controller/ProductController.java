@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,6 +38,20 @@ public class ProductController {
         Thread.sleep(500);
         dto.setPrice(priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0).getPrice_sale());
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/supplier/{id}")
+    public ResponseEntity<List<ProductDTO>> getAllBySupplier(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
+        List<Product> products = productServiceImp.findBySupplier(id);
+
+        List<ProductDTO> dtoList = new ArrayList<>();
+        for (Product product : products){
+            ProductDTO dto = product.convertToDTO();
+            dto.setPrice(priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0).getPrice_sale());
+            dtoList.add(dto);
+        }
+
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

@@ -28,6 +28,12 @@ public class CommuneServices {
         return provinceRepository.findAll();
     }
 
+    public Commune getCommuneByID(String id) throws Exception{
+        Optional<Commune> commune = communeRepository.findById(id);
+        if(commune.isEmpty()) throw new Exception("Invalid Commune ID");
+        return commune.get();
+    }
+
     public List<District> getDistrictByProvince(String provinceid) throws Exception{
         Optional<Province> province = provinceRepository.findById(provinceid);
         if(province.isEmpty()) {

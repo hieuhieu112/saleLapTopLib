@@ -20,10 +20,19 @@ public class AccountController {
     @Autowired
     private UserServicesImp userServices;
 
-    @GetMapping("all")
+    @GetMapping("all-customer")
     public ResponseEntity<List<UserResponse>> getAllCustomer(@RequestHeader("Authorization") String jwt) throws Exception{
         List<UserResponse> responses = new ArrayList<>();
         for(User user: userServices.findAllCustomer()){
+            responses.add(user.converToResponse());
+        }
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
+    @GetMapping("all-employee")
+    public ResponseEntity<List<UserResponse>> getAllEmployee(@RequestHeader("Authorization") String jwt) throws Exception{
+        List<UserResponse> responses = new ArrayList<>();
+        for(User user: userServices.findAllEmployee()){
             responses.add(user.converToResponse());
         }
         return new ResponseEntity<>(responses, HttpStatus.OK);

@@ -17,7 +17,7 @@ public class SupplierResponse {
     private Integer id;
     private String name;
     private String logo;
-    private String adress;
+    private String address;
     private String email;
     private String numberPhone;
 

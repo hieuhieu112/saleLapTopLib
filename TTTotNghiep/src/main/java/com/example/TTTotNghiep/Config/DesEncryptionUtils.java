@@ -38,4 +38,14 @@ public class DesEncryptionUtils {
     public static SecretKey getKeyFromBytes(byte[] keyBytes) {
         return new SecretKeySpec(keyBytes, ALGORITHM);
     }
+
+    public static String keyToString(SecretKey key) {
+        return Base64.getEncoder().encodeToString(key.getEncoded());
+    }
+
+    // Chuyển đổi chuỗi thành SecretKey
+    public static SecretKey stringToKey(String keyString) {
+        byte[] decodedKey = Base64.getDecoder().decode(keyString);
+        return new SecretKeySpec(decodedKey, 0, decodedKey.length, ALGORITHM);
+    }
 }

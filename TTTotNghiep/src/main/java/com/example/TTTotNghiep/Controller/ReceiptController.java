@@ -3,6 +3,7 @@ package com.example.TTTotNghiep.Controller;
 
 import com.example.TTTotNghiep.Request.ReceiptRequest;
 import com.example.TTTotNghiep.Response.MessageResponse;
+import com.example.TTTotNghiep.Response.ReceiptResponse;
 import com.example.TTTotNghiep.Service.ReceiptServiceImp;
 import com.example.TTTotNghiep.model.Receipt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,13 +22,19 @@ public class ReceiptController {
     private ReceiptServiceImp receiptService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Receipt>>  getALl(@RequestHeader("Authorization") String jwt) throws Exception {
-        return new ResponseEntity<>(receiptService.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<ReceiptResponse>>  getALl(@RequestHeader("Authorization") String jwt) throws Exception {
+        List<Receipt> receipts = receiptService.getAll();
+        List<ReceiptResponse> responses = new ArrayList<>();
+        for(Receipt receipt:receipts){
+            responses.add(receipt.convertToResponse());
+        }
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Receipt> getByID(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
-        return new ResponseEntity<>(receiptService.findByID(id), HttpStatus.OK);
+    public ResponseEntity<ReceiptResponse> getByID(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
+        return new ResponseEntity<>(receiptService.findByID(id).convertToResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -36,25 +44,38 @@ public class ReceiptController {
     }
 
     @PostMapping()
-    public ResponseEntity<Receipt> createReceipt(@RequestHeader("Authorization") String jwt,@RequestBody ReceiptRequest request) throws Exception{
-        return new ResponseEntity<>(receiptService.createReceipt(request, jwt), HttpStatus.OK);
+    public ResponseEntity<ReceiptResponse> createReceipt(@RequestHeader("Authorization") String jwt,@RequestBody ReceiptRequest request) throws Exception{
+        Receipt receipt = receiptService.createReceipt(request, jwt);
+        return new ResponseEntity<>(receipt.convertToResponse(), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Receipt> editReceipt(@RequestHeader("Authorization") String jwt,
+    public ResponseEntity<ReceiptResponse> editReceipt(@RequestHeader("Authorization") String jwt,
                                                @RequestBody ReceiptRequest request, @PathVariable Integer id) throws Exception{
-        return new ResponseEntity<>(receiptService.editReceipt(id, request, jwt), HttpStatus.OK);
+        return new ResponseEntity<>(receiptService.editReceipt(id, request, jwt).convertToResponse(), HttpStatus.OK);
     }
 
     @GetMapping("/user/created")
-    public ResponseEntity<List<Receipt>> getListByUserTime(@RequestHeader("Authorization") String jwt,
+    public ResponseEntity<List<ReceiptResponse>> getListByUserTime(@RequestHeader("Authorization") String jwt,
                                                            @RequestBody LocalDateTime start, @RequestBody LocalDateTime end) throws  Exception{
-        return new ResponseEntity<>(receiptService.getByUserAndTime(jwt, start, end), HttpStatus.OK);
+        List<Receipt> receipts = receiptService.getByUserAndTime(jwt, start, end);
+        List<ReceiptResponse> responses = new ArrayList<>();
+        for(Receipt receipt:receipts){
+            responses.add(receipt.convertToResponse());
+        }
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping("/supplier/{id}/created")
-    public ResponseEntity<List<Receipt>> getListBySupplier(@RequestHeader("Authorization") String jwt, @PathVariable Integer id,
+    public ResponseEntity<List<ReceiptResponse>> getListBySupplier(@RequestHeader("Authorization") String jwt, @PathVariable Integer id,
                                                            @RequestBody LocalDateTime start, @RequestBody LocalDateTime end) throws Exception{
-        return new ResponseEntity<>(receiptService.getBySupplierAndTime(id, start, end), HttpStatus.OK);
+
+        List<Receipt> receipts = receiptService.getBySupplierAndTime(id, start, end);
+        List<ReceiptResponse> responses = new ArrayList<>();
+        for(Receipt receipt:receipts){
+            responses.add(receipt.convertToResponse());
+        }
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 }

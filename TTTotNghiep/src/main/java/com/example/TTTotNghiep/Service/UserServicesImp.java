@@ -48,4 +48,9 @@ public class UserServicesImp implements UserServices {
     public List<User> findAllCustomer() throws Exception {
         return userRepository.findAllUserByType(0);
     }
+
+    @Override
+    public List<User> findAllEmployee() throws Exception {
+        return userRepository.findAllUserByType(2);
+    }
 }

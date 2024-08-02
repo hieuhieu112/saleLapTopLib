@@ -170,21 +170,26 @@ public class ProductServiceImp implements ProductService{
         Orders cart = orderRepository.findCartByUserID(userServices.findUserByJwtToken(jwt).getEmail());
 
         for(OrderDetail orderDetail1 : orderDetailService.getAllByIDOrder(cart.getId())){
-            if(Objects.equals(orderDetail1.getId(), id)){
-                orderDetail1.setQuantity(quan);
-                orderDetailRepository.save(orderDetail1);
-                return ;
+            if(Objects.equals(orderDetail1.getProduct().getId(), id)){
+                if(orderDetail1.getQuantity() + quan <= 0){
+                    orderDetailRepository.delete(orderDetail1);
+                    return ;
+                }else{
+                    orderDetail1.setQuantity(orderDetail1.getQuantity() + quan);
+                    orderDetailRepository.save(orderDetail1);
+                    return ;
+                }
             }
         }
 
-
-        OrderDetail orderDetail = new OrderDetail();
-        orderDetail.setProduct(product);
-        orderDetail.setOrder(cart);
-        orderDetail.setUnitprice(priceServices.getPriceByProductTime(id, LocalDateTime.now()).get(0).getPrice_sale());
-        orderDetail.setQuantity(quan);
-        orderDetailRepository.save(orderDetail);
-        return ;
+        if(quan>0){
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setProduct(product);
+            orderDetail.setOrder(cart);
+            orderDetail.setUnitprice(priceServices.getPriceByProductTime(id, LocalDateTime.now()).get(0).getPrice_sale());
+            orderDetail.setQuantity(quan);
+            orderDetailRepository.save(orderDetail);
+        }
     }
 
     @Override
@@ -224,6 +229,13 @@ public class ProductServiceImp implements ProductService{
 
         product.setQuantity(product.getQuantity() - quantity);
         productRepository.save(product);
+    }
+
+    @Override
+    public List<Product> findBySupplier(Integer id) throws Exception {
+//        Optional<Supplier> optionalSupplier = supplierRepository.findById(id);
+//        if(optionalSupplier.isEmpty()) throw  new Exception("Invalid Supplier ID");
+        return productRepository.findBySupplierID(id);
     }
 
 

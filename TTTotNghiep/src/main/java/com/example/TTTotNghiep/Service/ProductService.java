@@ -36,4 +36,6 @@ public interface ProductService {
     public void removeFromCart(Integer id, String jwt) throws  Exception;
 
     public void buyOrder(Integer idproduct, Integer quantity) throws Exception;
+
+    public List<Product> findBySupplier(Integer id) throws Exception;
 }

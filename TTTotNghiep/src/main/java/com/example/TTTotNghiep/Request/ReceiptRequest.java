@@ -7,14 +7,12 @@ import com.example.TTTotNghiep.model.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class ReceiptRequest {
-
-    private LocalDateTime dateImport;
     private String description;
-//    private String employeeid;
     private Integer supplierid;
 
     private List<ReceiptDetailRequest> detailList;
@@ -25,7 +23,7 @@ public class ReceiptRequest {
         receipt.setEmployee(employee);
         receipt.setSupplier(supplier);
         receipt.setDescription(getDescription());
-        receipt.setDateImport(getDateImport());
+        receipt.setDateImport(LocalDateTime.now());
 
         return receipt;
     }

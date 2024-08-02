@@ -42,7 +42,7 @@ public class Supplier {
         response.setNumberPhone(numberPhone);
 
         String add = getAddressDescription()+", "+commune.getName()+", "+commune.getMaqh().getName()+", "+commune.getMaqh().getMatp().getName();
-        response.setAdress(add);
+        response.setAddress(add);
 
         return response;
     }

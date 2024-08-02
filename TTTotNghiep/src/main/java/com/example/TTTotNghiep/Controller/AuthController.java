@@ -27,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/auth")
@@ -57,8 +58,8 @@ public class AuthController {
 
         User createUser = new User();
         createUser.setEmail(user.getEmail());
-        createUser.setPass(passwordEncoder.encode(user.getPass()));
-//        createUser.setPass(user.getPass());
+//        createUser.setPass(passwordEncoder.encode(user.getPass()));
+        createUser.setPassword(userrequest.getPass());
         createUser.setBirthday(user.getBirthday());
         createUser.setCommune(user.getCommune());
         createUser.setFullname(user.getFullname());
@@ -75,7 +76,7 @@ public class AuthController {
 
         User savedUser = userRepository.save(createUser);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPass());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtProvider.generateToken(authentication);
@@ -84,11 +85,13 @@ public class AuthController {
         authResponse.setJwt(jwt);
         authResponse.setRole(createUser.getCUSTOMERRole());
         authResponse.setMessage("Sign up success");
-        orderService.createCart(jwt);
+        orderService.createCartSignUp(jwt);
 
 
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
     }
+
+
 
 
     @PostMapping("/signin")
@@ -99,7 +102,6 @@ public class AuthController {
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String role = authorities.isEmpty()?null:authorities.iterator().next().getAuthority();
-        System.out.println("role: " + role);
 
         String jwt = jwtProvider.generateToken(authentication);
 
@@ -112,15 +114,16 @@ public class AuthController {
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
-    private Authentication authenticate(String userName, String password) {
+    private Authentication authenticate(String userName, String password) throws Exception {
         UserDetails userDetails = customerUserDetailService.loadUserByUsername(userName);
+        //User user = userRepository.findByEmail(userName);
 
         if (userDetails == null){
-            throw  new BadCredentialsException("Invalid Username");
+            throw  new Exception("Invalid Username");
         }
-
-        if(!passwordEncoder.matches(password, userDetails.getPassword())){
-            throw  new BadCredentialsException("Wrong password");
+        String str= userDetails.getPassword();
+        if(!Objects.equals(userDetails.getPassword(), password)){
+            throw  new Exception("Wrong password");
         }
 
         return new UsernamePasswordAuthenticationToken(userName, null, userDetails.getAuthorities());

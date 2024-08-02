@@ -22,7 +22,7 @@ public class OrderController {
 
     @GetMapping("/all")
     public ResponseEntity<List<OrderResponse>> getAllOrder(@RequestHeader("Authorization") String jwt) throws Exception{
-        List<Orders> orders = orderService.findAll();
+        List<Orders> orders = orderService.findAllOrder();
         List<OrderResponse> responses = new ArrayList<>();
 
         for (Orders order:orders){
@@ -41,5 +41,12 @@ public class OrderController {
             responses.add((order.convertToResponse()));
         }
         return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
+    @GetMapping("/approval/{id}")
+    public ResponseEntity<OrderResponse> approvalOrder(@RequestHeader("Authorization") String jwt,
+                                                       @PathVariable Integer id, @RequestParam Integer status) throws  Exception{
+
+        return new ResponseEntity<>(orderService.approvalOrder(id, status).convertToResponse(), HttpStatus.OK);
     }
 }

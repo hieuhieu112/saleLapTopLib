@@ -11,4 +11,6 @@ public interface UserServices {
     public User findUserByEmail(String email) throws  Exception;
 
     public List<User> findAllCustomer() throws  Exception;
+
+    public List<User> findAllEmployee() throws  Exception;
 }
