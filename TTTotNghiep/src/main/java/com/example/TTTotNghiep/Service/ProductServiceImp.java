@@ -232,6 +232,13 @@ public class ProductServiceImp implements ProductService{
     }
 
     @Override
+    public void checkQuantityOrder(Integer idproduct, Integer quantity) throws Exception {
+        Product product = findByID(idproduct);
+        if(product.getQuantity() < quantity && quantity > 0) throw  new Exception("Error quantity to order");
+        productRepository.save(product);
+    }
+
+    @Override
     public List<Product> findBySupplier(Integer id) throws Exception {
 //        Optional<Supplier> optionalSupplier = supplierRepository.findById(id);
 //        if(optionalSupplier.isEmpty()) throw  new Exception("Invalid Supplier ID");

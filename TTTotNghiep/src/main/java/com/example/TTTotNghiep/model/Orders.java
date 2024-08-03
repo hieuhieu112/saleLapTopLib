@@ -25,10 +25,12 @@ public class Orders {
     private String receiver;
     private String addressDescription;
     private String description;
-    private Integer status; //0: Cancel, 1: Waiting for approve, 2: In process, 3: Done
+    @JoinColumn(name = "statuss")
+    private Integer statuss; //0: Cancel, 1: Waiting for approve, 2: In process, 3: Done
     @JoinColumn(name = "number_phone")
     private String numberPhone;
-    private Integer type;//1: order, 0: cart
+    @JoinColumn(name = "typee")
+    private Integer typee;//1: order, 0: cart
 
 
     @ManyToOne
@@ -58,8 +60,8 @@ public class Orders {
         response.setOrderDate(formattedDate);
         response.setReceiver(receiver);
         response.setDescription(description);
-        response.setStatusInt(getStatus());
-        switch (status){
+        response.setStatusInt(getStatuss());
+        switch (statuss){
             case 0: response.setStatus("Cancel"); break;
             case 1: response.setStatus("Waiting for approve");break;
             case 2: response.setStatus("In process");break;

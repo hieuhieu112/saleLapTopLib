@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -28,6 +29,7 @@ public class OrderController {
         for (Orders order:orders){
             responses.add((order.convertToResponse()));
         }
+        Collections.reverse(responses);
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 

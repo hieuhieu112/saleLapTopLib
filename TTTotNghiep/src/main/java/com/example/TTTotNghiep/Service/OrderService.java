@@ -3,9 +3,11 @@ package com.example.TTTotNghiep.Service;
 
 
 import com.example.TTTotNghiep.Request.OrderRequest;
+import com.example.TTTotNghiep.Response.StatisticalResponse;
 import com.example.TTTotNghiep.model.OrderDetail;
 import com.example.TTTotNghiep.model.Orders;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,4 +23,5 @@ public interface OrderService {
     public Orders createCart(String jwt) throws Exception;
     public List<OrderDetail> getCartItems(String jwt)  throws Exception;
     public Orders approvalOrder(Integer id, Integer status) throws Exception;
+    public List<StatisticalResponse> getStatistical(LocalDate start, LocalDate end) throws Exception;
 }

@@ -4,12 +4,14 @@ import com.example.TTTotNghiep.Config.JWTProvider;
 import com.example.TTTotNghiep.Repository.OrderRepository;
 import com.example.TTTotNghiep.Repository.UserRepository;
 import com.example.TTTotNghiep.Request.OrderRequest;
+import com.example.TTTotNghiep.Response.StatisticalResponse;
 import com.example.TTTotNghiep.model.OrderDetail;
 import com.example.TTTotNghiep.model.Orders;
 import com.example.TTTotNghiep.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -84,8 +86,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cartToOrder(String jwt, OrderRequest request) throws Exception {
         Orders cart = getCart(jwt);
-        cart.setType(1);
-        cart.setStatus(1);
+        cart.setTypee(1);
+        cart.setStatuss(1);
         cart.setOrderDate(LocalDateTime.now());
         cart.setReceiver(request.getReceiver());
         cart.setDescription(request.getDescription());
@@ -95,7 +97,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderDetail> orderDetails = orderDetailService.getAllByIDOrder(cart.getId());
         for(OrderDetail detail: orderDetails){
-            productServiceImp.buyOrder(detail.getProduct().getId(), detail.getQuantity());
+            productServiceImp.checkQuantityOrder(detail.getProduct().getId(), detail.getQuantity());
         }
         createCart(jwt);
     }
@@ -107,10 +109,16 @@ public class OrderServiceImpl implements OrderService {
 
         Orders order = findByID(id);
         if(!Objects.equals(order.getOrderer().getId(), user.getId())) throw  new Exception("No Access");
-        order.setStatus(status);
+        if(order.getStatuss() == 1 && (status == 2 || status ==3)){
+            List<OrderDetail> orderDetails = orderDetailService.getAllByIDOrder(order.getId());
+            for(OrderDetail detail: orderDetails){
+                productServiceImp.buyOrder(detail.getProduct().getId(),detail.getQuantity());
+            }
+        }
+        order.setStatuss(status);
         orderRepository.save(order);
 
-        if(order.getStatus() == 0) {// cancel order
+        if(order.getStatuss() == 0) {// cancel order
             List<OrderDetail> orderDetails = orderDetailService.getAllByIDOrder(order.getId());
             for(OrderDetail detail: orderDetails){
                 productServiceImp.buyOrder(detail.getProduct().getId(),-detail.getQuantity());
@@ -123,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
         User savedUser = userServices.findUserByJwtToken(jwt);
         Orders cart = new Orders();
 
-        cart.setStatus(0);
+        cart.setStatuss(0);
         cart.setOrderDate(null);
         cart.setReceiver(savedUser.getFullname());
         cart.setAddressDescription(savedUser.getAddressDescription());
@@ -131,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
         cart.setNumberPhone(savedUser.getNumberphone());
         cart.setOrderer(savedUser);
         cart.setConfirmer(null);
-        cart.setType(0);
+        cart.setTypee(0);
         cart.setCommune(savedUser.getCommune());
 
         return orderRepository.save(cart);
@@ -141,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
         User savedUser = userServices.findUserByJwtTokenSignUp(jwt);
         Orders cart = new Orders();
 
-        cart.setStatus(0);
+        cart.setStatuss(0);
         cart.setOrderDate(null);
         cart.setReceiver(savedUser.getFullname());
         cart.setAddressDescription(savedUser.getAddressDescription());
@@ -149,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
         cart.setNumberPhone(savedUser.getNumberphone());
         cart.setOrderer(savedUser);
         cart.setConfirmer(null);
-        cart.setType(0);
+        cart.setTypee(0);
         cart.setCommune(savedUser.getCommune());
 
         return orderRepository.save(cart);
@@ -164,9 +172,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Orders approvalOrder(Integer id, Integer status) throws Exception {
         Orders orders = findByID(id);
-        if(status <= 3 && status >= 0) orders.setStatus(status);
+        if(status <= 3 && status >= 0) orders.setStatuss(status);
         orderRepository.save(orders);
         return orders;
+    }
+
+    @Override
+    public List<StatisticalResponse> getStatistical(LocalDate start, LocalDate end) throws Exception {
+
+        return orderRepository.getResponseOrder(start, end);
     }
 
 
