@@ -52,7 +52,7 @@ public class ProductServiceImp implements ProductService{
 
     @Override
     public Product createProduct(ProductRequest request,@RequestHeader("Authorization") String jwt,
-                                 Float priceSale, Float pricePurchase, LocalDateTime timeEnd) throws Exception {
+                                 Float priceSale, Float pricePurchase) throws Exception {
         Optional<Category> category = categoryRepository.findById(request.getCategoryID());
         if(category.isEmpty()){
             throw new Exception("Invalid Category");
@@ -63,14 +63,14 @@ public class ProductServiceImp implements ProductService{
             throw  new Exception("Invalid Supplier");
         }
 
-        Product product =  productRepository.save(request.convertToModel(category.get(), supplier.get()));
+        Product product =  productRepository.save(request.convertToCreate(category.get(), supplier.get()));
 
         Price price = new Price();
         price.setPrice_purchase(pricePurchase);
         price.setPrice_sale(priceSale);
         price.setProduct(product);
         price.setStart_date(LocalDateTime.now());
-        price.setEnd_date(timeEnd);
+        price.setEnd_date(null);
 
         priceServices.createPrice(price);
 

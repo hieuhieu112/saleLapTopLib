@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    public Product createProduct(ProductRequest request,@RequestHeader("Authorization") String jwt, Float priceSale, Float pricePurchase, LocalDateTime timeEnd) throws  Exception;
+    public Product createProduct(ProductRequest request,@RequestHeader("Authorization") String jwt, Float priceSale, Float pricePurchase) throws  Exception;
 
     public Product updateProduct(Integer id, ProductRequest request) throws  Exception;
 

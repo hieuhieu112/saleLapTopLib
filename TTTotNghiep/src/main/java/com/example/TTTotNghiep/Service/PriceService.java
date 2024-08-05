@@ -11,4 +11,5 @@ public interface PriceService {
     public Price updatePrice(Integer id, Price price) throws Exception;
     public void deletePrice(Integer id)throws Exception;
     public Price createPrice(Price price) throws Exception;
+    public Price endPrice(Integer productid) throws Exception;
 }

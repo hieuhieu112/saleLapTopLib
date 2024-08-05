@@ -1,5 +1,6 @@
 package com.example.TTTotNghiep.model;
 
+import com.example.TTTotNghiep.Response.PriceResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,4 +29,15 @@ public class Price {
     @JoinColumn(name = "product_id")
     private Product product;
 
+
+    public PriceResponse convertToResponse(){
+        PriceResponse response = new PriceResponse();
+        response.setId(id);
+        response.setPrice_purchase(getPrice_purchase());
+        response.setPrice_sale(getPrice_sale());
+        response.setStart_date(start_date);
+        response.setEnd_date(getEnd_date());
+        response.setProduct(product.getName());
+        return response;
+    }
 }

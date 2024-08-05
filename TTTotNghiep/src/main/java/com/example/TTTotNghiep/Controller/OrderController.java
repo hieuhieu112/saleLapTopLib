@@ -2,6 +2,7 @@ package com.example.TTTotNghiep.Controller;
 
 
 import com.example.TTTotNghiep.Response.OrderResponse;
+import com.example.TTTotNghiep.Response.StatisticalResponse;
 import com.example.TTTotNghiep.Service.OrderServiceImpl;
 import com.example.TTTotNghiep.model.Orders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,5 +52,11 @@ public class OrderController {
                                                        @PathVariable Integer id, @RequestParam Integer status) throws  Exception{
 
         return new ResponseEntity<>(orderService.approvalOrder(id, status).convertToResponse(), HttpStatus.OK);
+    }
+    @GetMapping("/statistical")
+    public ResponseEntity<List<StatisticalResponse>> getOrderStatistical(@RequestHeader("Authorization") String jwt, @RequestParam LocalDate start,
+                                                                         @RequestParam LocalDate end) throws  Exception{
+
+        return new ResponseEntity<>(orderService.getStatistical(start,end), HttpStatus.OK);
     }
 }

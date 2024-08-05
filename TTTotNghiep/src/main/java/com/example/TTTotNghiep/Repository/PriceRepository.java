@@ -13,6 +13,9 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
     List<Price> findByProductID(@Param("productid") Integer productid);
 
 
-    @Query("SELECT p FROM Price p WHERE p.product.id = :productid AND p.start_date < :date AND :date < p.end_date")
+    @Query("SELECT p FROM Price p WHERE p.product.id = :productid AND p.start_date < :date AND (:date < p.end_date OR p.end_date IS NULL)")
     List<Price> findPriceByTimeAndProduct(@Param("productid") Integer productid, @Param("date") LocalDateTime time);
+
+//    @Query("SELECT p FROM Price p WHERE p.product.id = :productid AND p.start_date < :date AND (:date < p.end_date OR p.end_date = null)")
+//    Price findPriceByTimeNow(@Param("productid") Integer productid, @Param("date") LocalDateTime time);
 }

@@ -5,6 +5,7 @@ import com.example.TTTotNghiep.model.Price;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,8 @@ public class PriceServicesImpl implements PriceService {
     public List<Price> getPriceByProductTime(Integer id, LocalDateTime time) {
         return priceRepository.findPriceByTimeAndProduct(id, time);
     }
+
+
 
     @Override
     public Price updatePrice(Integer id, Price price) throws Exception {
@@ -63,5 +66,15 @@ public class PriceServicesImpl implements PriceService {
     @Override
     public Price createPrice(Price price) throws Exception {
         return priceRepository.save(price);
+    }
+
+    @Override
+    public Price endPrice(Integer productid) throws Exception {
+        List<Price> priceNowList = getPriceByProductTime(productid, LocalDateTime.now());
+        Price priceNow = priceNowList.get(0);
+        priceNow.setEnd_date(LocalDateTime.now());
+        priceRepository.save(priceNow);
+
+        return priceNow;
     }
 }

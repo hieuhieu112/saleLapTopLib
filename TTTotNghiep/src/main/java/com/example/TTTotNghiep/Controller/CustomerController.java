@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -52,9 +53,13 @@ public class CustomerController {
 
         for (Product product : products){
             ProductDTO dto = product.convertToDTO();
-            dto.setPrice(priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0).getPrice_sale());
+            Price price = priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0);
+            dto.setPrice(price.getPrice_sale());
+            dto.setPrice_import(price.getPrice_purchase());
             dtoList.add(dto);
         }
+
+        Collections.reverse(dtoList);
 
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
@@ -67,10 +72,12 @@ public class CustomerController {
 
         for (Product product : products){
             ProductDTO dto = product.convertToDTO();
-            dto.setPrice(priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0).getPrice_sale());
+            Price price = priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0);
+            dto.setPrice(price.getPrice_sale());
+            dto.setPrice_import(price.getPrice_purchase());
             dtoList.add(dto);
         }
-
+        Collections.reverse(dtoList);
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
@@ -78,7 +85,9 @@ public class CustomerController {
     public ResponseEntity<ProductDTO> getDetailProduct(@PathVariable Integer id) throws Exception {
 
         ProductDTO dto = productServiceImp.findByID(id).convertToDTO();
-        dto.setPrice(priceServices.getPriceByProductTime(id, LocalDateTime.now()).get(0).getPrice_sale());
+        Price price = priceServices.getPriceByProductTime(id, LocalDateTime.now()).get(0);
+        dto.setPrice(price.getPrice_sale());
+        dto.setPrice_import(price.getPrice_purchase());
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -91,7 +100,10 @@ public class CustomerController {
 
         for (Product product : products){
             ProductDTO dto = product.convertToDTO();
-            dto.setPrice(priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0).getPrice_sale());
+            Price price = priceServices.getPriceByProductTime(product.getId(), LocalDateTime.now()).get(0);
+
+            dto.setPrice(price.getPrice_sale());
+            dto.setPrice_import(price.getPrice_purchase());
             dtoList.add(dto);
         }
 

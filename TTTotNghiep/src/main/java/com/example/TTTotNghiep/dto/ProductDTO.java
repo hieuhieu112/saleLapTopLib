@@ -29,4 +29,5 @@ public class ProductDTO implements Serializable {
     private Integer supplierID;
 
     private  Float price;
+    private  Float price_import;
 }
