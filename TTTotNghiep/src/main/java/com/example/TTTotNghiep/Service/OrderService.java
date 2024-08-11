@@ -24,4 +24,5 @@ public interface OrderService {
     public List<OrderDetail> getCartItems(String jwt)  throws Exception;
     public Orders approvalOrder(Integer id, Integer status) throws Exception;
     public List<StatisticalResponse> getStatistical(LocalDate start, LocalDate end) throws Exception;
+    public List<Orders> getByUser(Integer id) throws Exception;
 }

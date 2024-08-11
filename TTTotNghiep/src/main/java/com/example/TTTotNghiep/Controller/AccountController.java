@@ -1,21 +1,19 @@
 package com.example.TTTotNghiep.Controller;
 
+import com.example.TTTotNghiep.Response.MessageResponse;
 import com.example.TTTotNghiep.Response.UserResponse;
 import com.example.TTTotNghiep.Service.UserServicesImp;
 import com.example.TTTotNghiep.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/account/")
+@RequestMapping("/api/admin/account/")
 public class AccountController {
     @Autowired
     private UserServicesImp userServices;
@@ -37,5 +35,15 @@ public class AccountController {
         }
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
-    //get all employee
+
+    @GetMapping("{id}")
+    public ResponseEntity<UserResponse> getDetailAccount(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws Exception{
+        return new ResponseEntity<>(userServices.findByID(id).converToResponse(), HttpStatus.OK);
+    }
+
+    @PutMapping("change-status/{id}")
+    public ResponseEntity<MessageResponse> changStatusUser(@RequestHeader("Authorization") String jwt, @PathVariable Integer id) throws  Exception{
+        userServices.changeStatus(id);
+        return new ResponseEntity<>(new MessageResponse("Chang status OK"),HttpStatus.OK);
+    }
 }

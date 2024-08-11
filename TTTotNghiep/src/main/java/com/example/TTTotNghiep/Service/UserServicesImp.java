@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServicesImp implements UserServices {
@@ -53,4 +54,26 @@ public class UserServicesImp implements UserServices {
     public List<User> findAllEmployee() throws Exception {
         return userRepository.findAllUserByType(2);
     }
+
+    @Override
+    public User changeStatus(Integer id) throws Exception {
+        User user = findByID(id);
+        if(user.getStatus() == 0){
+            user.setStatus(1);
+        }else{
+            user.setStatus(0);
+        }
+        userRepository.save(user);
+
+        return user;
+    }
+
+    @Override
+    public User findByID(Integer id) throws Exception {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()) throw  new Exception("Invalid ID");
+        return user.get();
+    }
+
+
 }

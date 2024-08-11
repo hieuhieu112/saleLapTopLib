@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/")
 public class AuthController {
     @Autowired
     private CustomerUserDetailService customerUserDetailService;
@@ -47,7 +47,7 @@ public class AuthController {
     @Autowired
     private OrderServiceImpl orderService;
 
-    @PostMapping("/signup")
+    @PostMapping("auth/signup")
     public ResponseEntity<AuthResponse> createHandleUser(@RequestBody UserRequest userrequest) throws Exception {
         User user = userrequest.convertToUser(communeRepository.getReferenceById(userrequest.getCommune()));
         User isEmailExist = userRepository.findByEmail(user.getEmail());
@@ -94,7 +94,7 @@ public class AuthController {
 
 
 
-    @PostMapping("/signin")
+    @PostMapping("auth/signin")
     public ResponseEntity<AuthResponse> loginHandleUser(@RequestBody LoginRequest request) throws Exception{
         String userName = request.getEmail();
         String password = request.getPassword();

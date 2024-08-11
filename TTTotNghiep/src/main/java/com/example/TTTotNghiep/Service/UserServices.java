@@ -13,4 +13,8 @@ public interface UserServices {
     public List<User> findAllCustomer() throws  Exception;
 
     public List<User> findAllEmployee() throws  Exception;
+
+    public User changeStatus(Integer id) throws Exception;
+
+    public User findByID(Integer id) throws  Exception;
 }

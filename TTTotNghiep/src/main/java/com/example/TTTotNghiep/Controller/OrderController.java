@@ -59,4 +59,15 @@ public class OrderController {
 
         return new ResponseEntity<>(orderService.getStatistical(start,end), HttpStatus.OK);
     }
+
+    @GetMapping("/customer/{id}")
+    public ResponseEntity<List<OrderResponse>>  findByCustomer(@RequestHeader("Authorization") String jwt,@PathVariable Integer id) throws Exception{
+        List<OrderResponse> responseList = new ArrayList<>();
+        List<Orders> orders = orderService.getByUser(id);
+
+        for(Orders order: orders){
+            responseList.add(order.convertToResponse());
+        }
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    }
 }

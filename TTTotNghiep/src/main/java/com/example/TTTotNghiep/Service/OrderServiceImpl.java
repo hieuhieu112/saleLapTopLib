@@ -183,5 +183,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.getResponseOrder(start, end);
     }
 
+    @Override
+    public List<Orders> getByUser(Integer id) throws Exception {
+        User user = userServices.findByID(id);
+        return getListByUser(user.getEmail());
+    }
+
 
 }
